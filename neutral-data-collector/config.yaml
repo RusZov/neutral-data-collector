@@ -1,0 +1,83 @@
+# Конфигурация сборщика нейтральных данных
+
+# Целевая задача сбора данных
+task:
+  description: "юридические консультации"
+  keywords:
+    - "юридическая помощь"
+    - "правовые консультации"
+    - "законодательство РФ"
+    - "юридические услуги"
+
+# Параметры сбора
+collection:
+  target_size: 50000  # целевой размер датасета
+  min_neutrality_score: 0.7  # минимальный порог нейтральности
+  max_results_per_query: 100  # макс. результатов на один поисковый запрос
+  
+# Языковые настройки
+language:
+  primary: "ru"  # основной язык
+  secondary: "en"  # дополнительный язык (опционально)
+  allow_secondary: false  # разрешить ли дополнительный язык
+
+# Фильтры доменов
+domains:
+  blacklist:
+    - "vk.com"
+    - "facebook.com"
+    - "twitter.com"
+    - "youtube.com"
+    - "tiktok.com"
+    - "pinterest.com"
+    - "instagram.com"
+  whitelist: []  # если пустой, используются все домены кроме blacklist
+
+# Стоп-слова для фильтрации
+stop_words:
+  - "cookie"
+  - "согласен"
+  - "реклама"
+  - "подпишитесь"
+  - "подписаться"
+  - "купить"
+  - "заказать"
+  - "акция"
+  - "скидка"
+  - "распродажа"
+
+# Параметры обработки текста
+text_processing:
+  min_length: 100  # минимальная длина текста в символах
+  max_length: 10000  # максимальная длина текста
+  remove_boilerplate: true  # удалять шаблонный мусор
+  
+# Кэширование
+cache:
+  enabled: true
+  ttl_hours: 24  # время жизни кэша в часах
+  
+# Вежливый скрапинг
+scraping:
+  delay_between_requests: 1.0  # задержка между запросами в секундах
+  max_retries: 3  # макс. количество повторных попыток
+  user_agent: "Mozilla/5.0 (compatible; NeutralDataCollector/1.0)"
+  
+# Балансировка (для многоклассовой задачи)
+balancing:
+  enabled: false  # включить балансировку классов
+  anchor_file: ""  # путь к файлу с ручной разметкой для дообучения
+  class_distribution: {}  # желаемое распределение по классам
+
+# Модель для оценки нейтральности
+neutrality_model:
+  type: "rule_based"  # "rule_based" или "transformer"
+  transformer_name: "blanchefort/rubert-base-cased-sentiment-rusentiment"  # название модели HuggingFace
+  batch_size: 16  # размер батча для трансформера
+
+# Вывод
+output:
+  csv_path: "data/processed/dataset.csv"
+  jsonl_path: "data/processed/dataset.jsonl"
+  stats_path: "data/processed/statistics.json"
+  generate_plots: true
